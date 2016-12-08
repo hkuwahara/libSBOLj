@@ -13,6 +13,12 @@ import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 
+import org.openscience.cdk.DefaultChemObjectBuilder;
+import org.openscience.cdk.exception.InvalidSmilesException;
+import org.openscience.cdk.smiles.SmilesParser;
+
+
+
 //import uk.co.turingatemyhamster.opensmiles.OpenSmilesParser;
 
 /**
@@ -853,11 +859,17 @@ public class SBOLValidate {
 	private static final Pattern iupacProteinParser = Pattern.compile(IUPAC_PROTEIN_PATTERN);
 //	private static OpenSmilesParser openSmilesParser = new OpenSmilesParser();
 
-	static boolean checkSmilesEncoding(String Elements) {
-		// TODO: add smiles parser code here
-		return true;
-	}
+  	private static SmilesParser smilesParser = new SmilesParser(DefaultChemObjectBuilder.getInstance());     
 	
+	static boolean checkSmilesEncoding(String sequence) {
+      		try {
+        		smilesParser.parseSmiles(sequence);
+      		} catch( InvalidSmilesException e ) {
+        		return false;
+      		}
+			return true;
+		}
+	}
 	static boolean checkSequenceEncoding(Sequence sequence) {
 		if (sequence.getEncoding().equals(Sequence.IUPAC_DNA) ||
 				(sequence.getEncoding().equals(Sequence.IUPAC_RNA))) {
